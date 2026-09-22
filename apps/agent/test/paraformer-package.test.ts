@@ -38,4 +38,12 @@ describe("packaged Paraformer resources", () => {
     expect(manifest).not.toMatch(/replace-with|TBD|TODO/i);
     for (const digest of [...manifest.matchAll(/"sha256"\s*:\s*"([^"]+)"/g)].map((match) => match[1])) expect(digest).toMatch(/^[a-f\d]{64}$/);
   });
+
+  it("prepares verified Paraformer and FFmpeg before the Windows NSIS build", async () => {
+    const workflow = await readFile(new URL("../../../.github/workflows/ci.yml", import.meta.url), "utf8");
+    expect(workflow).toContain("prepare:paraformer");
+    expect(workflow).toContain("verify:paraformer");
+    expect(workflow).toContain("resources/bin/ffmpeg.exe");
+    expect(workflow).toContain("resources/bin/ffprobe.exe");
+  });
 });
