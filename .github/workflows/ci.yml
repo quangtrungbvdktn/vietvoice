@@ -1,0 +1,40 @@
+name: VietVoice release gate
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      FUNASR_API_KEY: ci-sentinel-funasr-not-a-real-key
+      GROQ_API_KEY: ci-sentinel-groq-not-a-real-key
+      PRIMARY_TRANSLATION_API_KEY: ci-sentinel-primary-translation
+      OPENROUTER_API_KEY: ci-sentinel-openrouter-not-a-real-key
+      GEMINI_API_KEY: ci-sentinel-gemini-not-a-real-key
+      VIETVOICE_PRIVATE_ACCESS_TOKEN: ci-sentinel-private-access-token
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 11.19.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: node -e "import('./apps/api/dist/server.mjs')"
+      - run: pnpm security:scan
+      - run: pnpm --filter @vietvoice/web exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+  windows-agent:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 11.19.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vietvoice/agent typecheck
+      - run: pnpm --filter @vietvoice/agent test
+      - run: pnpm --filter @vietvoice/agent dist:win

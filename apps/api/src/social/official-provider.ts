@@ -1,0 +1,5 @@
+import { PublishError, type PublishProvider, type PublishRequest } from "./types.js";
+export class OfficialSocialProvider implements PublishProvider {
+  constructor(private readonly platform: "tiktok" | "facebook", private readonly endpoint: string, private readonly accessToken: string) {}
+  async publish(input: PublishRequest) { const response = await fetch(this.endpoint, { method: "POST", headers: { authorization: `Bearer ${this.accessToken}`, "content-type": "application/json" }, body: JSON.stringify(input) }); if (response.status === 401) throw new PublishError("TOKEN_EXPIRED"); if (response.status === 403) throw new PublishError("PUBLISH_PERMISSION_REQUIRED"); if (!response.ok) throw new PublishError("PUBLISH_FAILED"); const result = await response.json() as { id?: unknown; url?: unknown }; if (typeof result.id !== "string" || !result.id) throw new PublishError("PUBLISH_FAILED"); return { platformPostId: `${this.platform}:${result.id}`, ...(typeof result.url === "string" ? { publicUrl: result.url } : {}) }; }
+}

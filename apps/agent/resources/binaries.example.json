@@ -1,0 +1,7 @@
+{
+  "binaries": [
+    { "name": "ffmpeg", "path": "resources/bin/ffmpeg.exe", "sha256": "replace-with-release-sha256" },
+    { "name": "ffprobe", "path": "resources/bin/ffprobe.exe", "sha256": "replace-with-release-sha256" },
+    { "name": "yt-dlp", "path": "resources/bin/yt-dlp.exe", "sha256": "replace-with-release-sha256" }
+  ]
+}

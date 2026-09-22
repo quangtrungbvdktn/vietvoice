@@ -1,0 +1,22 @@
+{
+  "name": "vietvoice-hybrid-studio",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r --if-present build",
+    "lint": "pnpm -r typecheck",
+    "security:scan": "node scripts/scan-client-secrets.mjs && node scripts/scan-obsolete-asr.mjs",
+    "security:scan:asr": "node scripts/scan-obsolete-asr.mjs",
+    "test": "vitest run",
+    "typecheck": "pnpm -r typecheck",
+    "test:e2e": "pnpm --filter @vietvoice/web test:e2e"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  }
+}

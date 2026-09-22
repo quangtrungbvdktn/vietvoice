@@ -1,0 +1,10 @@
+.worktrees/
+.superpowers/
+node_modules/
+.env
+dist/
+coverage/
+.next/
+test-results/
+data/
+*.tsbuildinfo

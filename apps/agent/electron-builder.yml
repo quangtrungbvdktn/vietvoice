@@ -1,0 +1,16 @@
+appId: vn.vietvoice.agent
+productName: VietVoice Agent
+win:
+  target: nsis
+  artifactName: VietVoice-Agent-${version}-win-x64.${ext}
+  signAndEditExecutable: false
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+files:
+  - dist/**
+extraResources:
+  - from: resources/bin
+    to: bin
+    filter:
+      - "*.exe"

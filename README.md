@@ -1,2 +1,0 @@
-# vietvoice
-VietVoice

@@ -1,0 +1,18 @@
+{
+  "name": "@vietvoice/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/electron.cjs",
+  "description": "Private Windows processing agent for VietVoice",
+  "author": "VietVoice",
+  "scripts": {
+    "build": "esbuild src/main/electron.ts --bundle --platform=node --external:electron --format=cjs --outfile=dist/electron.cjs && esbuild src/main/preload.ts --bundle --platform=node --external:electron --format=cjs --outfile=dist/preload.cjs",
+    "dist:win": "pnpm build && electron-builder --win nsis --x64",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify:binaries": "node scripts/verify-binaries.mjs"
+  },
+  "dependencies": { "@vietvoice/agent-protocol": "workspace:*", "@vietvoice/source-connectors": "workspace:*", "@vietvoice/media-core": "workspace:*" },
+  "devDependencies": { "@types/node": "^24.10.1", "electron": "^38.2.2", "electron-builder": "^26.0.12", "esbuild": "^0.28.2", "typescript": "^5.7.3", "vitest": "^3.2.4" }
+}
