@@ -35,6 +35,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @vietvoice/agent prepare:paraformer
       - run: pnpm --filter @vietvoice/agent verify:paraformer
+      - name: Install FFmpeg runtime
+        run: choco install ffmpeg -y --no-progress
       - name: Stage FFmpeg runtime
         shell: pwsh
         run: |
