@@ -6,8 +6,6 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      FUNASR_API_KEY: ci-sentinel-funasr-not-a-real-key
-      GROQ_API_KEY: ci-sentinel-groq-not-a-real-key
       PRIMARY_TRANSLATION_API_KEY: ci-sentinel-primary-translation
       OPENROUTER_API_KEY: ci-sentinel-openrouter-not-a-real-key
       GEMINI_API_KEY: ci-sentinel-gemini-not-a-real-key
@@ -35,6 +33,14 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vietvoice/agent prepare:paraformer
+      - run: pnpm --filter @vietvoice/agent verify:paraformer
+      - name: Stage FFmpeg runtime
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force "apps/agent/resources/bin" | Out-Null
+          Copy-Item (Get-Command ffmpeg).Source "apps/agent/resources/bin/ffmpeg.exe"
+          Copy-Item (Get-Command ffprobe).Source "apps/agent/resources/bin/ffprobe.exe"
       - run: pnpm --filter @vietvoice/agent typecheck
       - run: pnpm --filter @vietvoice/agent test
       - run: pnpm --filter @vietvoice/agent dist:win
