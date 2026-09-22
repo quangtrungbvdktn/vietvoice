@@ -46,5 +46,7 @@ describe("packaged Paraformer resources", () => {
     expect(workflow).toContain("choco install ffmpeg");
     expect(workflow).toContain("resources/bin/ffmpeg.exe");
     expect(workflow).toContain("resources/bin/ffprobe.exe");
+    expect(workflow).toContain("actions/upload-artifact@v4");
+    expect(workflow).toContain("VietVoice-Agent-*-win-x64.exe");
   });
 });
