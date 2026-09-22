@@ -46,3 +46,9 @@ jobs:
       - run: pnpm --filter @vietvoice/agent typecheck
       - run: pnpm --filter @vietvoice/agent test
       - run: pnpm --filter @vietvoice/agent dist:win
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: vietvoice-agent-windows-x64
+          path: apps/agent/dist/VietVoice-Agent-*-win-x64.exe
+          if-no-files-found: error
