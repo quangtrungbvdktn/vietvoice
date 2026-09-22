@@ -8,7 +8,9 @@
   "author": "VietVoice",
   "scripts": {
     "build": "esbuild src/main/electron.ts --bundle --platform=node --external:electron --format=cjs --outfile=dist/electron.cjs && esbuild src/main/preload.ts --bundle --platform=node --external:electron --format=cjs --outfile=dist/preload.cjs",
-    "dist:win": "pnpm build && electron-builder --win nsis --x64",
+    "prepare:paraformer": "node scripts/fetch-paraformer.mjs",
+    "verify:paraformer": "node scripts/verify-paraformer.mjs",
+    "dist:win": "pnpm verify:paraformer && pnpm build && electron-builder --win nsis --x64",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "verify:binaries": "node scripts/verify-binaries.mjs"

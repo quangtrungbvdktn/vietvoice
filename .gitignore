@@ -8,3 +8,6 @@ coverage/
 test-results/
 data/
 *.tsbuildinfo
+apps/agent/resources/paraformer/
+apps/agent/resources/paraformer.staging/
+library-assets/

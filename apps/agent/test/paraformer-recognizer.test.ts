@@ -18,11 +18,14 @@ function processResult(output: string, exitCode = 0): SpawnedProcess {
 function recognizer(spawnProcess: ReturnType<typeof vi.fn>, timeoutMs = 45_000) {
   return new ParaformerRecognizer({
     executablePath: "D:\\VietVoice Agent\\sherpa-onnx-offline.exe",
+    vadExecutablePath: "D:\\VietVoice Agent\\sherpa-onnx-vad.exe",
     modelPath: "D:\\VietVoice Agent\\model.int8.onnx",
+    vadModelPath: "D:\\VietVoice Agent\\silero_vad.onnx",
     tokensPath: "D:\\VietVoice Agent\\tokens.txt",
     modelId: "sherpa-onnx-paraformer-zh-2023-09-14",
     runtimeVersion: "1.13.8",
     modelSha256: "a".repeat(64),
+    vadModelSha256: "c".repeat(64),
     tokensSha256: "b".repeat(64),
   }, { spawnProcess, threads: 4, timeoutMs });
 }

@@ -17,11 +17,14 @@ export interface ParaformerManifest {
 
 export interface VerifiedParaformer {
   executablePath: string;
+  vadExecutablePath: string;
   modelPath: string;
+  vadModelPath: string;
   tokensPath: string;
   modelId: string;
   runtimeVersion: string;
   modelSha256: string;
+  vadModelSha256: string;
   tokensSha256: string;
 }
 
@@ -41,7 +44,7 @@ export async function resolveVerifiedParaformer(
     } catch (error) {
       const missing = (error as { code?: string }).code === "FILE_MISSING";
       const code = missing
-        ? file.role === "executable" || file.role === "dll" ? "PARAFORMER_BINARY_MISSING" : "PARAFORMER_MODEL_MISSING"
+        ? file.role === "executable" || file.role === "vad-executable" || file.role === "dll" ? "PARAFORMER_BINARY_MISSING" : "PARAFORMER_MODEL_MISSING"
         : "PARAFORMER_CHECKSUM_MISMATCH";
       const message = code === "PARAFORMER_BINARY_MISSING" ? "Thiếu chương trình nhận dạng Paraformer."
         : code === "PARAFORMER_MODEL_MISSING" ? "Thiếu tệp nhận dạng Paraformer."
@@ -50,15 +53,20 @@ export async function resolveVerifiedParaformer(
     }
   }
   const executable = requiredRole(manifest.runtime.files, "executable");
+  const vadExecutable = requiredRole(manifest.runtime.files, "vad-executable");
   const model = requiredRole(manifest.model.files, "model");
+  const vadModel = requiredRole(manifest.model.files, "vad-model");
   const tokens = requiredRole(manifest.model.files, "tokens");
   return {
     executablePath: win32.join(resourceDirectory, executable.path),
+    vadExecutablePath: win32.join(resourceDirectory, vadExecutable.path),
     modelPath: win32.join(resourceDirectory, model.path),
+    vadModelPath: win32.join(resourceDirectory, vadModel.path),
     tokensPath: win32.join(resourceDirectory, tokens.path),
     modelId: manifest.model.id,
     runtimeVersion: manifest.runtime.version,
     modelSha256: model.sha256,
+    vadModelSha256: vadModel.sha256,
     tokensSha256: tokens.sha256,
   };
 }
@@ -72,7 +80,7 @@ function validateManifest(manifest: ParaformerManifest): void {
     && manifest.model.license === "Apache-2.0" && all.length > 0
     && all.every((file) => file.path && file.sizeBytes > 0 && /^[a-f\d]{64}$/i.test(file.sha256));
   if (!valid) throw failure("PARAFORMER_CHECKSUM_MISMATCH", "Manifest Paraformer không hợp lệ.");
-  for (const role of ["executable", "dll", "model", "tokens"] as const) {
+  for (const role of ["executable", "vad-executable", "dll", "model", "vad-model", "tokens"] as const) {
     if (!all.some((file) => file.role === role)) throw failure("PARAFORMER_MODEL_MISSING", "Manifest Paraformer thiếu thành phần bắt buộc.");
   }
 }

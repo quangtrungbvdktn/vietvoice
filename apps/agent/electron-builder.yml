@@ -14,3 +14,7 @@ extraResources:
     to: bin
     filter:
       - "*.exe"
+  - from: resources/paraformer
+    to: paraformer
+  - from: resources/paraformer-manifest.json
+    to: paraformer/paraformer-manifest.json

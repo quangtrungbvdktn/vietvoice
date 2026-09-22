@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
 import type { Readable } from "node:stream";
+import { rm } from "node:fs/promises";
 import type { AsrFailure } from "./types.js";
 
 export interface VadProcess extends EventEmitter { stdout: Readable; stderr: Readable; kill(signal?: NodeJS.Signals): boolean }
@@ -13,21 +14,23 @@ export class SileroVadDetector {
     spawnProcess: (command, args, options) => spawn(command, args, options) as unknown as VadProcess, timeoutMs: 45_000,
   }) {}
   async detect(audioPath: string, durationMs: number, signal?: AbortSignal): Promise<Interval[]> {
-    const child = this.dependencies.spawnProcess(this.paths.executablePath, [`--silero-vad-model=${this.paths.modelPath}`, audioPath], { shell: false, windowsHide: true });
+    const strippedPath = `${audioPath}.vad.wav`;
+    const child = this.dependencies.spawnProcess(this.paths.executablePath, [`--silero-vad-model=${this.paths.modelPath}`, audioPath, strippedPath], { shell: false, windowsHide: true });
     let output = ""; let timedOut = false; let aborted = signal?.aborted ?? false;
-    child.stdout.on("data", (chunk) => { output += chunk.toString(); if (Buffer.byteLength(output) > 1024 * 1024) child.kill("SIGTERM"); });
+    child.stderr.on("data", (chunk) => { output += chunk.toString(); if (Buffer.byteLength(output) > 1024 * 1024) child.kill("SIGTERM"); });
     const abort = () => { aborted = true; child.kill("SIGTERM"); };
     signal?.addEventListener("abort", abort, { once: true });
     const timer = setTimeout(() => { timedOut = true; child.kill("SIGTERM"); }, this.dependencies.timeoutMs);
     const code = await new Promise<number | null>((resolve, reject) => { child.once("error", reject); child.once("close", resolve); })
-      .finally(() => { clearTimeout(timer); signal?.removeEventListener("abort", abort); });
+      .finally(async () => { clearTimeout(timer); signal?.removeEventListener("abort", abort); await rm(strippedPath, { force: true }).catch(() => undefined); });
     if (aborted) throw Object.assign(new Error("Aborted"), { name: "AbortError" });
     if (timedOut) throw failure("PARAFORMER_TIMEOUT");
     if (code !== 0) throw failure("PARAFORMER_START_FAILED");
     try {
-      const parsed = JSON.parse(output) as { speech?: Interval[] };
-      if (!Array.isArray(parsed.speech)) throw new Error();
-      return split(merge(parsed.speech.map((item) => ({ startMs: clamp(item.startMs, 0, durationMs), endMs: clamp(item.endMs, 0, durationMs) }))));
+      const intervals = [...output.matchAll(/^\s*(\d+(?:\.\d+)?)\s+--\s+(\d+(?:\.\d+)?)\s*$/gm)]
+        .map((match) => ({ startMs: clamp(Number(match[1]) * 1_000, 0, durationMs), endMs: clamp(Number(match[2]) * 1_000, 0, durationMs) }));
+      if (intervals.length === 0) throw new Error();
+      return split(merge(intervals));
     } catch { throw failure("PARAFORMER_OUTPUT_INVALID"); }
   }
 }

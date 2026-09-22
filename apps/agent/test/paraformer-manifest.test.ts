@@ -10,6 +10,7 @@ const validManifest: ParaformerManifest = {
     files: [
       { path: "bin/sherpa-onnx-offline.exe", sizeBytes: 10, sha256: digest, role: "executable" },
       { path: "bin/onnxruntime.dll", sizeBytes: 20, sha256: digest, role: "dll" },
+      { path: "bin/sherpa-onnx-vad.exe", sizeBytes: 21, sha256: digest, role: "vad-executable" },
     ],
   },
   model: {
@@ -19,6 +20,7 @@ const validManifest: ParaformerManifest = {
     files: [
       { path: "model/model.int8.onnx", sizeBytes: 30, sha256: digest, role: "model" },
       { path: "model/tokens.txt", sizeBytes: 40, sha256: digest, role: "tokens" },
+      { path: "model/silero_vad.onnx", sizeBytes: 41, sha256: digest, role: "vad-model" },
     ],
   },
 };
@@ -32,8 +34,11 @@ describe("resolveVerifiedParaformer", () => {
         executablePath: expect.stringContaining("sherpa-onnx-offline.exe"),
         modelPath: expect.stringContaining("model.int8.onnx"),
         tokensPath: expect.stringContaining("tokens.txt"),
+        vadExecutablePath: expect.stringContaining("sherpa-onnx-vad.exe"),
+        vadModelPath: expect.stringContaining("silero_vad.onnx"),
+        vadModelSha256: digest,
       });
-    expect(verify).toHaveBeenCalledTimes(4);
+    expect(verify).toHaveBeenCalledTimes(6);
   });
 
   it("rejects a manifest without a required DLL", async () => {

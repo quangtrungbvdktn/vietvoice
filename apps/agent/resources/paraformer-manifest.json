@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "runtime": {
+    "version": "1.13.8",
+    "sourceUrl": "https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.8/sherpa-onnx-v1.13.8-win-x64-shared-MT-Release-no-tts.tar.bz2",
+    "archiveSha256": "4b0a94f7b5c606b1b64a19a831c2127559e4b3d34e195465ebc7be73d9ed4783",
+    "files": [
+      {
+        "path": "bin/sherpa-onnx-offline.exe",
+        "role": "executable",
+        "sizeBytes": 2421760,
+        "sha256": "e93182fc262658b5bc31afc98ba952b104440a6c8f3d44dd43a2fc20eb400455"
+      },
+      {
+        "path": "bin/sherpa-onnx-vad.exe",
+        "role": "vad-executable",
+        "sizeBytes": 514560,
+        "sha256": "e9bad9fd097b69aec9842a2bc62869cc204fe0843a02c40b89a08d786b15ebb7"
+      },
+      {
+        "path": "bin/onnxruntime.dll",
+        "role": "dll",
+        "sizeBytes": 17799168,
+        "sha256": "7f66f939a881baf4f46a2216496798edf4a1429878b646d12674aa62f27d8a25"
+      },
+      {
+        "path": "bin/onnxruntime_providers_shared.dll",
+        "role": "dll",
+        "sizeBytes": 104960,
+        "sha256": "551d0e1fe4c227d8542314ba718d52f4379e0c7bfe729a37c59833a884e27b4d"
+      }
+    ]
+  },
+  "model": {
+    "id": "sherpa-onnx-paraformer-zh-2023-09-14",
+    "sourceUrl": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-paraformer-zh-2023-09-14.tar.bz2",
+    "archiveSha256": "9c49fd9c6fb63de8e18c1054cf3d100f804741b7e608e187923cd8ff09fa9f03",
+    "license": "Apache-2.0",
+    "files": [
+      {
+        "path": "model/model.int8.onnx",
+        "role": "model",
+        "sizeBytes": 243371218,
+        "sha256": "f36a0433bcf096bd6d6f11b80a3ac8bed110bdca632fe0d731df8d1a84475945"
+      },
+      {
+        "path": "model/tokens.txt",
+        "role": "tokens",
+        "sizeBytes": 75756,
+        "sha256": "59aba8873a2ed1e122c25fee421e25f283b63290efbde85c1f01a853d83cb6e6"
+      },
+      {
+        "path": "model/silero_vad.onnx",
+        "role": "vad-model",
+        "sizeBytes": 643854,
+        "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+      }
+    ]
+  }
+}
