@@ -43,6 +43,7 @@ describe("packaged Paraformer resources", () => {
     const workflow = await readFile(new URL("../../../.github/workflows/ci.yml", import.meta.url), "utf8");
     expect(workflow).toContain("prepare:paraformer");
     expect(workflow).toContain("verify:paraformer");
+    expect(workflow).toContain("choco install ffmpeg");
     expect(workflow).toContain("resources/bin/ffmpeg.exe");
     expect(workflow).toContain("resources/bin/ffprobe.exe");
   });
